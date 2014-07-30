@@ -784,6 +784,15 @@ module ActiveRecord
     end
   end
 
+  module MigrateTask#:nodoc:
+    def self.perform(target_version, verbose, scope)
+      Migration.verbose = verbose
+      Migrator.migrate(Migrator.migrations_paths, target_version) do |migration|
+        scope.blank? || scope == migration.scope
+      end
+    end
+  end
+
   class Migrator#:nodoc:
     class << self
       attr_writer :migrations_paths

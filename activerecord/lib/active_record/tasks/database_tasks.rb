@@ -127,6 +127,13 @@ module ActiveRecord
         }
       end
 
+      def migrate
+        verbose = ENV["VERBOSE"] ? ENV["VERBOSE"] == "true" : true
+        version = ENV["VERSION"] ? ENV["VERSION"].to_i : nil
+        scope   = ENV['SCOPE']
+        ActiveRecord::MigrateTask.perform(version, verbose, scope)
+      end
+
       def charset_current(environment = env)
         charset ActiveRecord::Base.configurations[environment]
       end

@@ -273,6 +273,20 @@ module ActiveRecord
     end
   end
 
+  class DatabaseTasksMigrateTest < ActiveRecord::TestCase
+    def test_migrate_receives_correct_env_vars
+      verbose, version, scope = ENV['VERBOSE'], ENV['VERSION'], ENV['SCOPE']
+
+      ENV['VERBOSE'] = 'false'
+      ENV['VERSION'] = '4'
+      ENV['SCOPE']   = 'custom_scope'
+
+      ActiveRecord::Migrator.expects(:migrate).with(ActiveRecord::Migrator.migrations_paths, 4)
+      ActiveRecord::Tasks::DatabaseTasks.migrate
+    ensure
+      ENV['VERBOSE'], ENV['VERSION'], ENV['SCOPE'] = verbose, version, scope
+    end
+  end
 
   class DatabaseTasksPurgeTest < ActiveRecord::TestCase
     include DatabaseTasksSetupper
